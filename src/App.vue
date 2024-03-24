@@ -3,133 +3,133 @@
   </header>
 
 	<main class="main">
-		<TheFloor v-for="el of floors" :key="el" :el="el" :add="addFloor"></TheFloor>
-		<div class="lift" ref="liftRef"></div>
+		<TheFloor v-for="el of floors" :key="el" :el="el" :add="add"></TheFloor>
+		<!-- <div class="lift" ref="liftRef"></div> -->
+
+		<TheLift :levels="levels" ref="liftComponentRef" />
 	
 	</main>
-
 
 </template>
 
 <script setup>
+
+import { onMounted, ref } from 'vue';
+import TheLift from './components/TheLift.vue';
 import TheFloor from './components/TheFloor.vue';
-import { onMounted, reactive, ref } from 'vue';
-import { FLOOR_QUANTITY } from './config/constants';
 import { useFloors } from './use/useFloors';
 
-// const floors = ref([]);
-const requestId = ref(null);
-const liftRef = ref(null);
-let liftContainer = null;
-const queue = reactive([]);
-const timer = ref(null);
-
-const lift = reactive({
-	progress: 2,
-	bottom: 0,
-	currentFloor: 1,
-	isRun: false
-});
-
-// const levels = reactive({
-// 	1: 0,
-// 	2: 100,
-// 	3: 200,
-// 	4: 300,
-// 	5: 400
-// });
 
 const [floors, levels] = useFloors();
+const liftComponentRef = ref(null);
 
-
-const run = () => {
-	if (!lift.isRun) {
-		lift.isRun = true;
-
-		if (lift.currentFloor < queue[0].floor) {
-			lift.progress = Math.abs(lift.progress);
-		} else {
-			lift.progress = Math.abs(lift.progress) * -1;
-		}
-		animate(queue[0].floor);
-	}
-
+const add = (...args) => {
+	liftComponentRef.value.addFloor(...args);
 };
 
 
-const addFloor = (floor, toggleBtn) => {
+// const requestId = ref(null);
+// const liftRef = ref(null);
+// let liftContainer = null;
+// const queue = reactive([]);
+// const timer = ref(null);
 
-	const execute = () => {
-		toggleBtn();
-		queue.push({floor, toggleBtn});
-		run();
-	};
-	if (!lift.isRun && !queue.includes(floor) && lift.currentFloor !== floor) {
-		execute();
-	} else if (lift.isRun && !queue.includes(floor)) {
-		execute();
-	}
-};
+// const lift = reactive({
+// 	progress: 2,
+// 	bottom: 0,
+// 	currentFloor: 1,
+// 	isRun: false
+// });
 
-const draw = () => {
+// const run = () => {
+// 	if (!lift.isRun) {
+// 		lift.isRun = true;
 
-	lift.bottom = lift.bottom + lift.progress;
-	liftRef.value.style.bottom = lift.bottom + 'px';
-};
+// 		if (lift.currentFloor < queue[0].floor) {
+// 			lift.progress = Math.abs(lift.progress);
+// 		} else {
+// 			lift.progress = Math.abs(lift.progress) * -1;
+// 		}
+// 		animate(queue[0].floor);
+// 	}
 
-const delay = () => {
-	return new Promise((resolve) => {
-		timer.value = setTimeout(resolve, 3000);
-	})
-		.catch (er => console.log(er));
-};
+// };
 
-const animate = (floor) => {
 
-	requestId.value = requestAnimationFrame(function animate() {
+// const addFloor = (floor, toggleBtn) => {
 
-		if (liftContainer) draw();
+// 	const execute = () => {
+// 		toggleBtn();
+// 		queue.push({floor, toggleBtn});
+// 		run();
+// 	};
+// 	if (!lift.isRun && !queue.includes(floor) && lift.currentFloor !== floor) {
+// 		execute();
+// 	} else if (lift.isRun && !queue.includes(floor)) {
+// 		execute();
+// 	}
+// };
 
-		if (requestId.value && lift.bottom !== levels[floor]) {
-			requestAnimationFrame(animate);
-		} else {
-			cancelAnimationFrame(requestId.value);
-			liftContainer.classList.add('blink');
-			requestId.value = null;
-			lift.currentFloor = floor;
+// const draw = () => {
 
-			queue[0].toggleBtn();
-			queue.shift();
-			delay().then(() => {
-				lift.isRun = false;
-				liftContainer.classList.remove('blink');
-				setTimeout(() => {
+// 	lift.bottom = lift.bottom + lift.progress;
+// 	liftRef.value.style.bottom = lift.bottom + 'px';
+// };
+
+// const delay = () => {
+// 	return new Promise((resolve) => {
+// 		timer.value = setTimeout(resolve, 3000);
+// 	})
+// 		.catch (er => console.log(er));
+// };
+
+// const animate = (floor) => {
+
+// 	requestId.value = requestAnimationFrame(function animate() {
+
+// 		if (liftContainer) draw();
+
+// 		if (requestId.value && lift.bottom !== levels[floor]) {
+// 			requestAnimationFrame(animate);
+// 		} else {
+// 			cancelAnimationFrame(requestId.value);
+// 			liftContainer.classList.add('blink');
+// 			requestId.value = null;
+// 			lift.currentFloor = floor;
+
+// 			queue[0].toggleBtn();
+// 			queue.shift();
+// 			delay().then(() => {
+// 				lift.isRun = false;
+// 				liftContainer.classList.remove('blink');
+// 				setTimeout(() => {
 					
-					if (queue.length) run();
-				}, 400);
+// 					if (queue.length) run();
+// 				}, 400);
 
 				
 				
-			});
+// 			});
 			
 			
-		}
-	});
+// 		}
+// 	});
 
 
 
-};
+// };
 
 
 onMounted(() => {
 	// элемент DOM будет определён в ref после первоначальной отрисовки
 
-	liftContainer = liftRef.value;
-	liftContainer.style.bottom = lift.bottom + 'px';
-	console.log(liftContainer.style.bottom);
+	// liftContainer = lift.value;
+	// liftContainer.style.bottom = lift.bottom + 'px';
+	// console.log(liftContainer.style.bottom);
 
+	liftComponentRef.value.setParams();
+	console.log('MOUNTED in App');
 });
-
 
 
 

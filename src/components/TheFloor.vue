@@ -3,9 +3,7 @@
 			<div class="space"></div>
 			<button class="btn" type="button" @click="handleClick" :class="isPressed ? 'pressed' : ''">{{ number }}</button>
 	</div>
-
 </template>
-
 
 
 <script setup>
