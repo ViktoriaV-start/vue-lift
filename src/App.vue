@@ -4,10 +4,7 @@
 
 	<main class="main">
 		<TheFloor v-for="el of floors" :key="el" :el="el" :add="add"></TheFloor>
-		<!-- <div class="lift" ref="liftRef"></div> -->
-
 		<TheLift :levels="levels" ref="liftComponentRef" />
-	
 	</main>
 
 </template>
@@ -27,119 +24,15 @@ const add = (...args) => {
 	liftComponentRef.value.addFloor(...args);
 };
 
-
-// const requestId = ref(null);
-// const liftRef = ref(null);
-// let liftContainer = null;
-// const queue = reactive([]);
-// const timer = ref(null);
-
-// const lift = reactive({
-// 	progress: 2,
-// 	bottom: 0,
-// 	currentFloor: 1,
-// 	isRun: false
-// });
-
-// const run = () => {
-// 	if (!lift.isRun) {
-// 		lift.isRun = true;
-
-// 		if (lift.currentFloor < queue[0].floor) {
-// 			lift.progress = Math.abs(lift.progress);
-// 		} else {
-// 			lift.progress = Math.abs(lift.progress) * -1;
-// 		}
-// 		animate(queue[0].floor);
-// 	}
-
-// };
-
-
-// const addFloor = (floor, toggleBtn) => {
-
-// 	const execute = () => {
-// 		toggleBtn();
-// 		queue.push({floor, toggleBtn});
-// 		run();
-// 	};
-// 	if (!lift.isRun && !queue.includes(floor) && lift.currentFloor !== floor) {
-// 		execute();
-// 	} else if (lift.isRun && !queue.includes(floor)) {
-// 		execute();
-// 	}
-// };
-
-// const draw = () => {
-
-// 	lift.bottom = lift.bottom + lift.progress;
-// 	liftRef.value.style.bottom = lift.bottom + 'px';
-// };
-
-// const delay = () => {
-// 	return new Promise((resolve) => {
-// 		timer.value = setTimeout(resolve, 3000);
-// 	})
-// 		.catch (er => console.log(er));
-// };
-
-// const animate = (floor) => {
-
-// 	requestId.value = requestAnimationFrame(function animate() {
-
-// 		if (liftContainer) draw();
-
-// 		if (requestId.value && lift.bottom !== levels[floor]) {
-// 			requestAnimationFrame(animate);
-// 		} else {
-// 			cancelAnimationFrame(requestId.value);
-// 			liftContainer.classList.add('blink');
-// 			requestId.value = null;
-// 			lift.currentFloor = floor;
-
-// 			queue[0].toggleBtn();
-// 			queue.shift();
-// 			delay().then(() => {
-// 				lift.isRun = false;
-// 				liftContainer.classList.remove('blink');
-// 				setTimeout(() => {
-					
-// 					if (queue.length) run();
-// 				}, 400);
-
-				
-				
-// 			});
-			
-			
-// 		}
-// 	});
-
-
-
-// };
-
-
 onMounted(() => {
-	// элемент DOM будет определён в ref после первоначальной отрисовки
-
-	// liftContainer = lift.value;
-	// liftContainer.style.bottom = lift.bottom + 'px';
-	// console.log(liftContainer.style.bottom);
-
 	liftComponentRef.value.setParams();
 	console.log('MOUNTED in App');
 });
 
-
-
 </script>
 
 
-
 <style scoped>
-
-
 
   header {
     display: flex;
@@ -193,7 +86,4 @@ onMounted(() => {
   to { opacity: 0.0; }
 }
 
-
-
 </style>
-

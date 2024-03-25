@@ -1,13 +1,25 @@
 <template>
 	<div class="floor">
 			<div class="space"></div>
-			<button class="btn" type="button" @click="handleClick" :class="isPressed ? 'pressed' : ''">{{ number }}</button>
+			<button
+			class="btn"
+			type="button"
+			@click="handleClick"
+			:class="isPressed ?
+			store.getDestinationFloor() === number ? 'destination' :
+			'pressed' : ''"
+			>
+			{{ number }}
+		</button>
 	</div>
 </template>
 
 
 <script setup>
 import { defineProps, ref } from 'vue';
+import { useGlobalObservable } from '../store/store';
+
+const store = useGlobalObservable();
 
 const { el, add } = defineProps(['el', 'add']);
 const number = ref(el);
@@ -67,6 +79,10 @@ const handleClick = () => {
 	.pressed {
 		background-color: #D16658;
 		color: #ffffff;
+	}
+
+	.destination {
+		background-color: #ffa599;;
 	}
 
 	

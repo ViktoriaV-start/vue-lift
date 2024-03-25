@@ -2,41 +2,38 @@
 	<div class="lift" ref="liftRef" >
 		<div>{{ lift.isRun ? lift.destination : '' }}</div>
 		<div>{{ lift.isRun ? lift.movement : '' }}</div>
-		<div>Count: {{ store.state.currentFloor }}</div>
-		
-		</div>
+	</div>
 </template>
 
 
 <script setup>
-import { defineProps, reactive, ref } from 'vue';
+import { defineProps, reactive, ref, watch } from 'vue';
 import { UP, DOWN } from '../config/constants';
 import { useGlobalObservable } from '../store/store';
 
 const store = useGlobalObservable();
 
+let lift = reactive({...store.value.getLiftState()});
+
 defineExpose({
 	addFloor,
-	setParams
+	setParams,
+	lift
 });
 
 const { levels } = defineProps(['levels']);
 const requestId = ref(null);
 const liftRef = ref(null);
 let liftContainer = null;
+//const queue = reactive([[...store.value.getLiftQueue()]]);
 const queue = reactive([]);
 const timer = ref(null);
 
-const lift = reactive({
-	progress: 2,
-	bottom: 0,
-	currentFloor: 1,
-	isRun: false,
-	destination: 1,
-	movement: UP
-});
+
 
 const run = () => {
+
+
 	if (!lift.isRun) {
 		lift.isRun = true;
 		lift.destination = queue[0].floor;
@@ -49,11 +46,13 @@ const run = () => {
 			lift.movement = DOWN;
 		}
 		animate(queue[0].floor);
-	}
+	} 
 };
 
 
 function addFloor(floor, toggleBtn) {
+
+	//lift.destination = floor;
 
 	const execute = () => {
 		toggleBtn();
@@ -67,12 +66,14 @@ function addFloor(floor, toggleBtn) {
 		execute();
 	}
 };
-
+ 
 function setParams() {
 	// элемент DOM будет определён в ref после первоначальной отрисовки
+	store.value.checkLocalStorage();
 	liftContainer = liftRef.value;
 	liftContainer.style.bottom = lift.bottom + 'px';
 	console.log(liftContainer.style.bottom);
+	console.log(lift, {...store.value.getLiftState()});
 };
 
 const draw = () => {
@@ -115,6 +116,10 @@ const animate = (floor) => {
 		}
 	});
 };
+
+watch(lift, () => {
+	store.value.setLiftState({...lift});
+});
 
 
 </script>

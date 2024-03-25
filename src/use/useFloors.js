@@ -19,9 +19,5 @@ export function useFloors() {
 	setFloors();
 	setLevels();
 
-	// const withoutValid = k => k !== validKey;
-
-	// form[validKey] = computed(() => Object.keys(form).filter(withoutValid).every(k => form[k].valid));
-
 	return [floors, levels];
 }
