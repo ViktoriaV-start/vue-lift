@@ -3,7 +3,13 @@
   </header>
 
 	<main class="main">
-		<TheFloor v-for="el of floors" :key="el" :el="el" :add="add"></TheFloor>
+		<TheFloor
+		v-for="el of floors"
+		:key="el"
+		:el="el"
+		:add="add"
+		>
+	</TheFloor>
 		<TheLift :levels="levels" ref="liftComponentRef" />
 	</main>
 

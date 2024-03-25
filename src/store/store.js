@@ -4,7 +4,7 @@ import { createGlobalObservable, useLocalObservable } from 'mobx-vue-lite';
 export const useGlobalObservable = createGlobalObservable(() => {
 	return useLocalObservable(() => ({
 
-		queue: [],
+		liftQueue: [],
 	
 		liftState: {
 			progress: 2,
@@ -20,29 +20,34 @@ export const useGlobalObservable = createGlobalObservable(() => {
 		},
 
 		getLiftState() {
+			this.checkLocalStorage();
 			return this.liftState;
 		},
 
 		getLiftQueue() {
-			return [this.queue];
+			return this.liftQueue;
 		},
 
 		checkLocalStorage() {
+
 			if(!localStorage.getItem(LIFT_KEY)) {
-				localStorage.setItem(LIFT_KEY, JSON.stringify({ [QUEUE_KEY]: [...this.queue], [STATE_KEY]: {...this.liftState} }));
+				localStorage.setItem(LIFT_KEY, JSON.stringify({ [QUEUE_KEY]: [...this.liftQueue], [STATE_KEY]: {...this.liftState} }));
 			} else {
 				const storage = JSON.parse(localStorage.getItem(LIFT_KEY));
 				this.liftState = { ...storage[STATE_KEY]};
+				this.liftQueue = [ ...storage[QUEUE_KEY]];
 			}
 		},
 
 		setLiftState(newLiftState) {
 			this.liftState = {...newLiftState};
-			localStorage.setItem(LIFT_KEY, JSON.stringify({ [QUEUE_KEY]: [...this.queue], [STATE_KEY]: {...this.liftState} }));
+			localStorage.setItem(LIFT_KEY, JSON.stringify({ [QUEUE_KEY]: [...this.liftQueue], [STATE_KEY]: {...this.liftState} }));
 		},
 
 		setLiftQueue(newQueue) {
-			this.queue = [...newQueue];
+
+			this.liftQueue = [...newQueue];
+			localStorage.setItem(LIFT_KEY, JSON.stringify({ [QUEUE_KEY]: [...this.liftQueue], [STATE_KEY]: {...this.liftState} }));
 		}
 
 	}));

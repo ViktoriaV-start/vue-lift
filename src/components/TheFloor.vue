@@ -5,7 +5,7 @@
 			class="btn"
 			type="button"
 			@click="handleClick"
-			:class="isPressed ?
+			:class="store.getLiftQueue().includes(number) ?
 			store.getDestinationFloor() === number ? 'destination' :
 			'pressed' : ''"
 			>
@@ -23,16 +23,13 @@ const store = useGlobalObservable();
 
 const { el, add } = defineProps(['el', 'add']);
 const number = ref(el);
-const isPressed = ref(false);
 
-const toggleBtn = () => {
-	isPressed.value = !isPressed.value;
-};
+defineExpose({
+	number
+});
 
 const handleClick = () => {
-	if (!isPressed.value) {
-		add(number.value, toggleBtn);
-	}
+	add(number.value);
 };
 
 </script>
