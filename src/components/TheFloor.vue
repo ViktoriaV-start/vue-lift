@@ -35,11 +35,8 @@ const handleClick = () => {
 	}
 };
 
-
-
-
-
 </script>
+
 
 <style scoped>
 
@@ -84,8 +81,5 @@ const handleClick = () => {
 	.destination {
 		background-color: #ffa599;;
 	}
-
-	
-
 
 </style>

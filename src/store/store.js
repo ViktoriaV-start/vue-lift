@@ -24,7 +24,6 @@ export const useGlobalObservable = createGlobalObservable(() => {
 		},
 
 		getLiftQueue() {
-			//console.log(this.queue)
 			return [this.queue];
 		},
 
@@ -34,9 +33,6 @@ export const useGlobalObservable = createGlobalObservable(() => {
 			} else {
 				const storage = JSON.parse(localStorage.getItem(LIFT_KEY));
 				this.liftState = { ...storage[STATE_KEY]};
-
-				//this.queue = [ ...storage[QUEUE_KEY]];
-				//console.log(...storage[QUEUE_KEY])
 			}
 		},
 

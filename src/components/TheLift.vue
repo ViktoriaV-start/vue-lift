@@ -25,14 +25,10 @@ const { levels } = defineProps(['levels']);
 const requestId = ref(null);
 const liftRef = ref(null);
 let liftContainer = null;
-//const queue = reactive([[...store.value.getLiftQueue()]]);
 const queue = reactive([]);
 const timer = ref(null);
 
-
-
 const run = () => {
-
 
 	if (!lift.isRun) {
 		lift.isRun = true;
@@ -49,10 +45,7 @@ const run = () => {
 	} 
 };
 
-
 function addFloor(floor, toggleBtn) {
-
-	//lift.destination = floor;
 
 	const execute = () => {
 		toggleBtn();
@@ -68,7 +61,6 @@ function addFloor(floor, toggleBtn) {
 };
  
 function setParams() {
-	// элемент DOM будет определён в ref после первоначальной отрисовки
 	store.value.checkLocalStorage();
 	liftContainer = liftRef.value;
 	liftContainer.style.bottom = lift.bottom + 'px';
@@ -121,8 +113,8 @@ watch(lift, () => {
 	store.value.setLiftState({...lift});
 });
 
-
 </script>
+
 
 <style scoped>
 
@@ -162,6 +154,5 @@ watch(lift, () => {
 	from { opacity: 1.0; }
 	to { opacity: 0.0; }
 }
-
 
 </style>
