@@ -62,15 +62,6 @@ onMounted(() => {
 		position: relative;
 	}
 
-	.lift {
-		width: 98px;
-		height: 100px;
-		position: absolute;
-		bottom: 1px;
-		left: 1px;
-		background-color: #59d298;
-	}
-
 	.blink {
   animation-name: blinker;
   animation-iteration-count: infinite;
