@@ -1,7 +1,4 @@
 <template>
-  <header>
-  </header>
-
 	<main class="main">
 		<TheFloor
 		v-for="el of floors"
@@ -40,26 +37,17 @@ onMounted(() => {
 
 <style scoped>
 
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+html,
+body {
+	height: 100%;
+	background-color: #FFF9F0;
+}
 
 	.main {
 		display: flex;
 		flex-direction: column;
 		position: relative;
+		margin: 5rem 0 0 5rem;
 	}
 
 	.blink {
