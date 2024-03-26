@@ -7,49 +7,54 @@
 
 
 <script setup>
-import { defineProps, onUnmounted, reactive, ref, watch } from 'vue';
+import { defineProps, onMounted, onUnmounted, reactive, ref, watch } from 'vue';
 import { UP, DOWN } from '../config/constants';
 import { useGlobalObservable } from '../store/store';
 
 const store = useGlobalObservable();
 
-let lift = reactive({...store.value.getLiftState()});
+const { levels, liftId } = defineProps(['levels', 'liftId']);
+let lift = reactive({...store.value.getLiftState(liftId)});
 
 defineExpose({
 	addFloor,
-	setParams
+	setParams,
+	liftId,
+	lift,
+	saveQueueToLocalStorage,
+	run
 });
 
-const { levels } = defineProps(['levels']);
 const requestId = ref(null);
 const liftRef = ref(null);
 let liftContainer = null;
-const queue = reactive([...store.value.getLiftQueue()]);
+const ownQueue = [];
 let timerId = null;
-let isMounted = true;
+let isMounted = ref(true);
 
-const run = () => {
+
+function run () {
 
 	const start = () => {
-		lift.destination = queue[0];
+		lift.destination = ownQueue[0];
 
-		if (lift.currentFloor < queue[0]) {
+		if (lift.currentFloor < ownQueue[0]) {
 			lift.progress = Math.abs(lift.progress);
 			lift.movement = UP;
 		} else {
 			lift.progress = Math.abs(lift.progress) * -1;
 			lift.movement = DOWN;
 		}
-		animate(queue[0]);
+		animate(ownQueue[0]);
 	};
 
 	if (!lift.isRun) {
 		lift.isRun = true;
+		isMounted.value = false;
 		start();
-	}
-
-	if (isMounted && lift.isRun) {
-		isMounted = false;
+	} else if (isMounted.value && lift.isRun) {
+		ownQueue.push(lift.destination);
+		isMounted.value = false;
 		start();
 	}
 
@@ -58,13 +63,13 @@ const run = () => {
 function addFloor(floor) {
 
 	const execute = () => {
-		queue.push(floor);
+		ownQueue.push(floor);
 		run();
 	};
 
-	if (!lift.isRun && !queue.includes(floor) && lift.currentFloor !== floor) {
+	if (!lift.isRun) {
 		execute();
-	} else if (lift.isRun && !queue.includes(floor)) {
+	} else if (lift.isRun) {
 		execute();
 	}
 };
@@ -72,8 +77,9 @@ function addFloor(floor) {
 function setParams() {
 	liftContainer = liftRef.value;
 	liftContainer.style.bottom = lift.bottom + 'px';
+	liftContainer.style.left = (liftId-1) * 100 + (liftId-1) * 20 + 1 + 'px';
 
-	if (queue.length) run();
+	if (ownQueue.length && lift.isRun) run();
 };
 
 const draw = () => {
@@ -89,6 +95,7 @@ const delay = () => {
 };
 
 const animate = (floor) => {
+	lift.currentFloor = floor;
 
 	requestId.value = requestAnimationFrame(function animate() {
 		if (lift.bottom < -5 || lift.bottom > (Object.values(levels).at(-1) + 5)) throw new Error('КОСЯК!');
@@ -103,13 +110,16 @@ const animate = (floor) => {
 				liftContainer.classList.add('blink');
 
 				requestId.value = null;
-				lift.currentFloor = floor;
 
-				queue.shift();
+				let queue = [...store.value.getLiftQueue()].filter(item => item != floor);
+
+				saveQueueToLocalStorage(queue);
+
+				ownQueue.shift();
 				delay().then(() => {
 					lift.isRun = false;
 					liftContainer.classList.remove('blink');
-					if (queue.length) run();
+					if (ownQueue.length) run();
 				});
 			}
 		}
@@ -120,13 +130,15 @@ watch(lift, () => {
 	store.value.setLiftState({...lift});
 });
 
-watch(queue, () => {
+function saveQueueToLocalStorage(queue) {
 	const queueFloors = [];
 	for (let key in queue) {
 		queueFloors.push(queue[key]);
 	}
 	store.value.setLiftQueue(queueFloors);
-});
+};
+
+onMounted(() => console.log('MOUNTED LIFT: ', lift.id));
 
 onUnmounted(() => {
 	clearTimeout(timerId);

@@ -1,12 +1,19 @@
 <template>
 	<div class="floor">
-			<div class="space"></div>
+			<div 
+			v-for="item of liftsRange"
+			:key="item"
+			:tube-number="item"
+			class="space"
+			>
+		</div>
+		
 			<button
 			class="btn"
 			type="button"
 			@click="handleClick"
 			:class="store.getLiftQueue().includes(number) ?
-			store.getDestinationFloor() === number ? 'destination' :
+			getClass() ? 'destination' :
 			'pressed' : ''"
 			>
 			{{ number }}
@@ -21,8 +28,16 @@ import { useGlobalObservable } from '../store/store';
 
 const store = useGlobalObservable();
 
-const { el, add } = defineProps(['el', 'add']);
+const { el, add, liftsRange } = defineProps(['el', 'add', 'liftsRange']);
 const number = ref(el);
+
+const getClass = () => {
+	let lifts = Object.values(store.value.liftState);
+
+	let isDestination = lifts.find(item => item.destination === number.value);
+	if(isDestination) return true;
+	return false;
+};
 
 const handleClick = () => {
 	add(number.value);

@@ -1,38 +1,107 @@
 <template>
-  <header>
-  </header>
 
 	<main class="main">
 		<TheFloor
 		v-for="el of floors"
 		:key="el"
 		:el="el"
+		:liftsRange="liftsRange"
 		:add="add"
 		>
 	</TheFloor>
-		<TheLift :levels="levels" ref="liftComponentRef" />
+		<TheLift 
+		v-for="item of liftsRange"
+		:key="item"
+		:liftId="item"
+		:levels="levels"
+		ref="liftComponentRef"
+		/>
+
 	</main>
 
 </template>
 
 <script setup>
 
-import { onMounted, ref } from 'vue';
+import { onMounted, onUnmounted, reactive } from 'vue';
 import TheLift from './components/TheLift.vue';
 import TheFloor from './components/TheFloor.vue';
 import { useFloors } from './use/useFloors';
+import { useGlobalObservable } from './store/store';
 
+const store = useGlobalObservable();
+store.value.checkLocalStorage();
 
-const [floors, levels] = useFloors();
-const liftComponentRef = ref(null);
+const [floors, levels, liftsRange] = useFloors();
+const liftComponentRef = reactive([]);
+let timerId = null;
+let liftsArray = reactive([]);
+
+const checkForTheSameFloor = (value) => {
+	if(liftsArray.find(item => item[1].lift.currentFloor === value)) return true;
+};
+
+const pushFloor = (value) => {
+	if(!store.value.getLiftQueue().includes(value)) {
+		let queue = [...store.value.getLiftQueue()];
+		queue.push(value);
+		liftsArray[0][1].saveQueueToLocalStorage(queue);
+	}
+};
+
+const findTheNearestLift = (value) => {
+	let notRunning = liftsArray.filter(item => !item[1].lift.isRun);
+	let nearestArr = [];
+
+	if (notRunning.length) {
+		nearestArr = notRunning.reduce((acc, item) => {
+			if (((Math.abs(value - item[1].lift.currentFloor) - Math.abs(value - acc[1].lift.currentFloor)) > 0) && !item[1].lift.isRun) {
+				return acc;
+			}
+			return item;
+		}, notRunning[0]);
+	}
+
+	return nearestArr;
+};
 
 const add = (value) => {
-	liftComponentRef.value.addFloor(value);
+	let isTheSameFloor = checkForTheSameFloor(value);
+
+	if (!isTheSameFloor) {
+		pushFloor(value);
+		let nearest = findTheNearestLift(value);
+
+		if(nearest.length) {
+			nearest[1].addFloor(value);
+		} else {
+			timerId = setTimeout(() => add(value), 500);
+		}
+	}
 };
 
 onMounted(() => {
-	liftComponentRef.value.setParams();
+	liftComponentRef.map(item => {
+		item.setParams();
+		if(item.lift.isRun) {
+			item.run();
+		};
+
+		liftsArray = Object.entries(liftComponentRef);
+	});
+
+	let currentQueue = store.value.getLiftQueue();
+	if(currentQueue.length) {
+		for (let key in currentQueue) {
+			add(currentQueue[key]);
+		}
+	}
+
 	console.log('MOUNTED in App');
+});
+
+onUnmounted(() => {
+	clearTimeout(timerId);
 });
 
 </script>
@@ -40,35 +109,20 @@ onMounted(() => {
 
 <style scoped>
 
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+html,
+body {
+  height: 100%;
+  font-family: 'Roboto', sans-serif;
+  min-width: 1400px;
+  background-color: #FFF9F0;
+}
 
 	.main {
 		display: flex;
 		flex-direction: column;
 		position: relative;
-	}
-
-	.lift {
-		width: 98px;
-		height: 100px;
-		position: absolute;
-		bottom: 1px;
-		left: 1px;
-		background-color: #59d298;
+		margin: 5rem 0 0 5rem;
+		/* padding: 0 5rem; */
 	}
 
 	.blink {
