@@ -29,7 +29,6 @@ export const useGlobalObservable = createGlobalObservable(() => {
 		},
 
 		checkLocalStorage() {
-
 			if(!localStorage.getItem(LIFT_KEY)) {
 				localStorage.setItem(LIFT_KEY, JSON.stringify({ [QUEUE_KEY]: [...this.liftQueue], [STATE_KEY]: {...this.liftState} }));
 			} else {
@@ -45,7 +44,6 @@ export const useGlobalObservable = createGlobalObservable(() => {
 		},
 
 		setLiftQueue(newQueue) {
-
 			this.liftQueue = [...newQueue];
 			localStorage.setItem(LIFT_KEY, JSON.stringify({ [QUEUE_KEY]: [...this.liftQueue], [STATE_KEY]: {...this.liftState} }));
 		}

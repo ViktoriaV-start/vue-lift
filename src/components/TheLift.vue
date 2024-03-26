@@ -7,7 +7,7 @@
 
 
 <script setup>
-import { defineProps, reactive, ref, watch } from 'vue';
+import { defineProps, onUnmounted, reactive, ref, watch } from 'vue';
 import { UP, DOWN } from '../config/constants';
 import { useGlobalObservable } from '../store/store';
 
@@ -17,8 +17,7 @@ let lift = reactive({...store.value.getLiftState()});
 
 defineExpose({
 	addFloor,
-	setParams,
-	lift
+	setParams
 });
 
 const { levels } = defineProps(['levels']);
@@ -26,7 +25,7 @@ const requestId = ref(null);
 const liftRef = ref(null);
 let liftContainer = null;
 const queue = reactive([...store.value.getLiftQueue()]);
-const timer = ref(null);
+let timerId = null;
 let isMounted = true;
 
 const run = () => {
@@ -73,7 +72,6 @@ function addFloor(floor) {
 function setParams() {
 	liftContainer = liftRef.value;
 	liftContainer.style.bottom = lift.bottom + 'px';
-	console.log(liftContainer.style.bottom);
 
 	if (queue.length) run();
 };
@@ -85,7 +83,7 @@ const draw = () => {
 
 const delay = () => {
 	return new Promise((resolve) => {
-		timer.value = setTimeout(resolve, 3000);
+		timerId = setTimeout(resolve, 3000);
 	})
 		.catch (er => console.log(er));
 };
@@ -95,7 +93,6 @@ const animate = (floor) => {
 	requestId.value = requestAnimationFrame(function animate() {
 		if (lift.bottom < -5 || lift.bottom > (Object.values(levels).at(-1) + 5)) throw new Error('КОСЯК!');
 
-
 		if (requestId.value && lift.bottom !== levels[floor]) {
 			if (liftContainer) draw();
 			requestAnimationFrame(animate);
@@ -104,7 +101,7 @@ const animate = (floor) => {
 			if (requestId.value) {
 				cancelAnimationFrame(requestId.value);
 				liftContainer.classList.add('blink');
-				console.log(requestId.value)
+
 				requestId.value = null;
 				lift.currentFloor = floor;
 
@@ -112,25 +109,9 @@ const animate = (floor) => {
 				delay().then(() => {
 					lift.isRun = false;
 					liftContainer.classList.remove('blink');
-					setTimeout(() => {
-						if (queue.length) run();
-					}, 400);
+					if (queue.length) run();
 				});
 			}
-			// cancelAnimationFrame(requestId.value);
-			// liftContainer.classList.add('blink');
-			// console.log(requestId.value)
-			// requestId.value = null;
-			// lift.currentFloor = floor;
-
-			// queue.shift();
-			// delay().then(() => {
-			// 	lift.isRun = false;
-			// 	liftContainer.classList.remove('blink');
-			// 	setTimeout(() => {
-			// 		if (queue.length) run();
-			// 	}, 400);
-			// });
 		}
 	});
 };
@@ -145,7 +126,10 @@ watch(queue, () => {
 		queueFloors.push(queue[key]);
 	}
 	store.value.setLiftQueue(queueFloors);
+});
 
+onUnmounted(() => {
+	clearTimeout(timerId);
 });
 
 </script>

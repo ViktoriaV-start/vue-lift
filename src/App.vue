@@ -26,8 +26,8 @@ import { useFloors } from './use/useFloors';
 const [floors, levels] = useFloors();
 const liftComponentRef = ref(null);
 
-const add = (...args) => {
-	liftComponentRef.value.addFloor(...args);
+const add = (value) => {
+	liftComponentRef.value.addFloor(value);
 };
 
 onMounted(() => {

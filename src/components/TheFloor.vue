@@ -24,10 +24,6 @@ const store = useGlobalObservable();
 const { el, add } = defineProps(['el', 'add']);
 const number = ref(el);
 
-defineExpose({
-	number
-});
-
 const handleClick = () => {
 	add(number.value);
 };
