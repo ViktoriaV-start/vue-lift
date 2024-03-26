@@ -81,7 +81,7 @@ const add = (value) => {
 };
 
 onMounted(() => {
-	liftComponentRef.map(item => {
+	liftComponentRef.forEach(item => {
 		item.setParams();
 		if(item.lift.isRun) {
 			item.run();
@@ -112,8 +112,6 @@ onUnmounted(() => {
 html,
 body {
   height: 100%;
-  font-family: 'Roboto', sans-serif;
-  min-width: 1400px;
   background-color: #FFF9F0;
 }
 
@@ -122,7 +120,6 @@ body {
 		flex-direction: column;
 		position: relative;
 		margin: 5rem 0 0 5rem;
-		/* padding: 0 5rem; */
 	}
 
 	.blink {
