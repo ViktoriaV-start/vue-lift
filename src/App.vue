@@ -55,6 +55,10 @@ const findTheNearestLift = (value) => {
 
 	if (notRunning.length) {
 		nearestArr = notRunning.reduce((acc, item) => {
+			if (((Math.abs(value - item[1].lift.currentFloor) - Math.abs(value - acc[1].lift.currentFloor)) === 0) && !item[1].lift.isRun) {
+				if(item[1].lift.currentFloor > value) return item;
+				return acc;
+			}
 			if (((Math.abs(value - item[1].lift.currentFloor) - Math.abs(value - acc[1].lift.currentFloor)) > 0) && !item[1].lift.isRun) {
 				return acc;
 			}
@@ -86,9 +90,8 @@ onMounted(() => {
 		if(item.lift.isRun) {
 			item.run();
 		};
-
-		liftsArray = Object.entries(liftComponentRef);
 	});
+	liftsArray = Object.entries(liftComponentRef);
 
 	let currentQueue = store.value.getLiftQueue();
 	if(currentQueue.length) {

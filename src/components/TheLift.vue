@@ -45,6 +45,7 @@ function run () {
 			lift.progress = Math.abs(lift.progress) * -1;
 			lift.movement = DOWN;
 		}
+		
 		animate(ownQueue[0]);
 	};
 
@@ -55,7 +56,8 @@ function run () {
 	} else if (isMounted.value && lift.isRun) {
 		ownQueue.push(lift.destination);
 		isMounted.value = false;
-		start();
+		//lift.destination = ownQueue[0];
+		animate(ownQueue[0]);
 	}
 
 };
