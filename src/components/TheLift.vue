@@ -7,7 +7,7 @@
 
 
 <script setup>
-import { defineProps, onUnmounted, reactive, ref, watch } from 'vue';
+import { defineProps, onUnmounted, onUpdated, reactive, ref, watch } from 'vue';
 import { UP, DOWN } from '../config/constants';
 import { useGlobalObservable } from '../store/store';
 
@@ -45,6 +45,7 @@ const run = () => {
 
 	if (!lift.isRun) {
 		lift.isRun = true;
+		isMounted = false;
 		start();
 	}
 
@@ -130,6 +131,10 @@ watch(queue, () => {
 
 onUnmounted(() => {
 	clearTimeout(timerId);
+});
+
+onUpdated(() => {
+	console.log('UPDATE IN LIFT');
 });
 
 </script>

@@ -14,7 +14,7 @@
 
 <script setup>
 
-import { onMounted, ref } from 'vue';
+import { onMounted, onUpdated, ref } from 'vue';
 import TheLift from './components/TheLift.vue';
 import TheFloor from './components/TheFloor.vue';
 import { useFloors } from './use/useFloors';
@@ -30,6 +30,10 @@ const add = (value) => {
 onMounted(() => {
 	liftComponentRef.value.setParams();
 	console.log('MOUNTED in App');
+});
+
+onUpdated(() => {
+	console.log('UPDATE IN APP');
 });
 
 </script>
