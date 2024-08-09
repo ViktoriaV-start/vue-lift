@@ -7,7 +7,7 @@
 
 
 <script setup>
-import { defineProps, onUnmounted, onUpdated, reactive, ref, watch } from 'vue';
+import { defineProps, onMounted, onUnmounted, onUpdated, reactive, ref, watch } from 'vue';
 import { UP, DOWN } from '../config/constants';
 import { useGlobalObservable } from '../store/store';
 
@@ -68,18 +68,24 @@ function addFloor(floor) {
 	} else if (lift.isRun && !queue.includes(floor)) {
 		execute();
 	}
-};
+}
 
 function setParams() {
 	liftContainer = liftRef.value;
 	liftContainer.style.bottom = lift.bottom + 'px';
-
 	if (queue.length) run();
-};
+}
 
-const draw = () => {
-	lift.bottom = lift.bottom + lift.progress;
+const draw = (time, startLevel, duration) => {
+	if (time > duration) {
+		lift.bottom = levels[lift.destination];
+	} else if (lift.movement === 'DOWN') {
+		lift.bottom = startLevel - time/10;
+	} else {
+		lift.bottom = startLevel + time/10;
+	}
 	liftRef.value.style.bottom = lift.bottom + 'px';
+	//console.log('Стартовый уровень: ', startLevel, 'Время: ', time, 'Передвинулся на: ', time/10, lift.bottom);
 };
 
 const delay = () => {
@@ -91,14 +97,21 @@ const delay = () => {
 
 const animate = (floor) => {
 
-	requestId.value = requestAnimationFrame(function animate() {
+	let start =  performance.now(); // временная метка в миллисекундах c начала очередного запуска ф-ции animate
+	const startBottom = lift.bottom;
+	const duration = (Math.abs(lift.bottom - levels[floor])*10); // 1000 2000 3000 4000
+
+	requestId.value = requestAnimationFrame(function animate(time) {
+		// time - временная метка - начало работы requestAnimationFrame
+		if (time < start) start = time - 1;
+		let timePassed = time - start;
+
 		if (lift.bottom < -5 || lift.bottom > (Object.values(levels).at(-1) + 5)) throw new Error('КОСЯК!');
 
 		if (requestId.value && lift.bottom !== levels[floor]) {
-			if (liftContainer) draw();
+			if (liftContainer) draw(timePassed, startBottom, duration);
 			requestAnimationFrame(animate);
 		} else {
-
 			if (requestId.value) {
 				cancelAnimationFrame(requestId.value);
 				liftContainer.classList.add('blink');
@@ -135,6 +148,10 @@ onUnmounted(() => {
 
 onUpdated(() => {
 	console.log('UPDATE IN LIFT');
+});
+
+onMounted(() => {
+	setParams();
 });
 
 </script>

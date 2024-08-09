@@ -7,7 +7,6 @@ export const useGlobalObservable = createGlobalObservable(() => {
 		liftQueue: [],
 	
 		liftState: {
-			progress: 2,
 			bottom: 0,
 			currentFloor: 1,
 			isRun: false,
