@@ -1,4 +1,4 @@
-import { createMemoryHistory, createRouter } from 'vue-router';
+import { createWebHistory , createRouter } from 'vue-router';
 import HomeView from '@/views/HomeView.vue';
 
 
@@ -13,15 +13,20 @@ const routes =  [
 		name: 'lifts',
 		component: () => import('../views/LiftsView.vue')
 	},
-	// {
-	// 	path: '/:pathMatch(.*)*',
-	// 	name: 'NotFound',
-	// 	component: ()=> import('@/views/NotFoundView.vue')
-	// }
+	{
+		path: '/task',
+		name: 'task',
+		component: () => import('../views/TaskView.vue')
+	},
+	{
+		path: '/:pathMatch(.*)*',
+		name: 'notFound',
+		component: ()=> import('@/views/NotFoundView.vue')
+	}
 ];
 
 const router = createRouter({
-	history: createMemoryHistory(),
+	history: createWebHistory(import.meta.env.BASE_URL),
 	routes
 });
 

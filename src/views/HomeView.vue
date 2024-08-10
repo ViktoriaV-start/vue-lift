@@ -1,21 +1,7 @@
-<template>
-  <main class="main">
-    <TheFloor
-        v-for="el of floors"
-        :key="el"
-        :el="el"
-        :add="add"
-    >
-    </TheFloor>
-    <TheLift :levels="levels" ref="liftComponentRef" />
-  </main>
-</template>
-
-
 <script setup>import { onMounted, onUpdated, ref } from 'vue';
-import TheLift from '../components/TheLift.vue';
-import TheFloor from '../components/TheFloor.vue';
-import { useFloors } from '../use/useFloors';
+import TheLift from '@/components/TheLift.vue';
+import TheFloor from '@/components/TheFloor.vue';
+import { useFloors } from '@/use/useFloors';
 
 
 const [floors, levels] = useFloors();
@@ -35,6 +21,19 @@ onUpdated(() => {
 });
 </script>
 
+<template>
+  <section class="lift-container">
+    <TheFloor
+        v-for="el of floors"
+        :key="el"
+        :el="el"
+        :add="add"
+    >
+    </TheFloor>
+    <TheLift :levels="levels" ref="liftComponentRef" />
+  </section>
+</template>
+
 
 <style scoped>
 
@@ -44,7 +43,7 @@ body {
   background-color: #FFF9F0;
 }
 
-.main {
+.lift-container {
   display: flex;
   flex-direction: column;
   position: relative;

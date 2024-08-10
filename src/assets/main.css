@@ -3,6 +3,7 @@
 
 #app {
   max-width: 1280px;
+  min-width: 440px;
   margin: 0 auto;
   font-weight: normal;
 }
@@ -31,4 +32,14 @@ header {
 	font-size: 2rem;
 	font-weight: 900;
 	color: #36727A;
-	}
+}
+
+@media (max-width: 555px) {
+    section {
+        margin: 1rem !important;
+    }
+
+    .title {
+        font-size: 1.5rem;
+    }
+}
