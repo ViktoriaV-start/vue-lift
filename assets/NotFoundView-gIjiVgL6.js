@@ -1,0 +1,1 @@
+import{_ as e,c,d as s}from"./index-CReOZGNf.js";const o={},t={class:"message"};function a(_,n){return c(),s("h3",t,"Страница не найдена")}const d=e(o,[["render",a],["__scopeId","data-v-e6a7ca51"]]);export{d as default};
