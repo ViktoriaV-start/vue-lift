@@ -1,5 +1,5 @@
 import { createWebHistory , createRouter } from 'vue-router';
-import HomeView from '@/views/HomeView.vue';
+import HomeView from '../views/HomeView.vue';
 
 
 const routes =  [
@@ -18,11 +18,11 @@ const routes =  [
 		name: 'task',
 		component: () => import('../views/TaskView.vue')
 	},
-	{
-		path: '/:pathMatch(.*)*',
-		name: 'notFound',
-		component: ()=> import('@/views/NotFoundView.vue')
-	}
+	// {
+	// 	path: '/:pathMatch(.*)*',
+	// 	name: 'notFound',
+	// 	component: ()=> import('../views/NotFoundView.vue')
+	// }
 ];
 
 const router = createRouter({

@@ -1,10 +1,10 @@
 <script setup>
 
 import { onMounted, onUnmounted, reactive } from 'vue';
-import LiftInGroup from '@/components/LiftInGroup.vue';
-import FloorInGroup from '@/components/FloorInGroup.vue';
-import { useGlobalObservable } from '@/store/store';
-import { useGroupLiftFloors } from '@/use/useGroupLiftFloors.js';
+import LiftInGroup from '../components/LiftInGroup.vue';
+import FloorInGroup from '../components/FloorInGroup.vue';
+import { useGlobalObservable } from '../store/store';
+import { useGroupLiftFloors } from '../use/useGroupLiftFloors.js';
 
 const store = useGlobalObservable();
 store.value.checkGroupLocalStorage();

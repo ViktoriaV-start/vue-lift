@@ -8,8 +8,8 @@
 
 <script setup>
 import { defineProps, onMounted, onUnmounted, onUpdated, reactive, ref, watch } from 'vue';
-import { UP, DOWN } from '@/config/constants';
-import { useGlobalObservable } from '@/store/store';
+import { UP, DOWN } from '../config/constants';
+import { useGlobalObservable } from '../store/store';
 
 const store = useGlobalObservable();
 

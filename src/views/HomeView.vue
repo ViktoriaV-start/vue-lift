@@ -1,7 +1,7 @@
 <script setup>import { onMounted, onUpdated, ref } from 'vue';
-import TheLift from '@/components/TheLift.vue';
-import TheFloor from '@/components/TheFloor.vue';
-import { useFloors } from '@/use/useFloors';
+import TheLift from '../components/TheLift.vue';
+import TheFloor from '../components/TheFloor.vue';
+import { useFloors } from '../use/useFloors';
 
 
 const [floors, levels] = useFloors();

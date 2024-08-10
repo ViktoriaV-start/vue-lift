@@ -5,8 +5,7 @@ import {
 	UP,
 	LIFTS_QUANTITY,
 	GROUP_LIFT_KEY,
-	GROUP_FLOOR_QUANTITY
-} from '@/config/constants';
+} from '../config/constants';
 import { createGlobalObservable, useLocalObservable } from 'mobx-vue-lite';
 
 export const useGlobalObservable = createGlobalObservable(() => {

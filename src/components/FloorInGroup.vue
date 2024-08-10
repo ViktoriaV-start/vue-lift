@@ -1,6 +1,6 @@
 <script setup>
 import { defineProps, ref } from 'vue';
-import { useGlobalObservable } from '@/store/store';
+import { useGlobalObservable } from '../store/store';
 
 const store = useGlobalObservable();
 
