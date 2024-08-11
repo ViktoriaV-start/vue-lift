@@ -1,6 +1,5 @@
 <script setup>
-
-import { onMounted, onUnmounted, reactive } from 'vue';
+import { onMounted, onUnmounted, reactive, ref } from 'vue';
 import LiftInGroup from '../components/LiftInGroup.vue';
 import FloorInGroup from '../components/FloorInGroup.vue';
 import { useGlobalObservable } from '../store/store';
@@ -10,7 +9,7 @@ const store = useGlobalObservable();
 store.value.checkGroupLocalStorage();
 
 const [floors, levels, liftsRange] = useGroupLiftFloors();
-const liftComponentRef = reactive([]);
+const liftComponentRef = ref([]);
 let timerId = null;
 let liftsArray = reactive([]);
 const isSingleLift = false;
@@ -63,14 +62,13 @@ const add = (value) => {
 };
 
 onMounted(() => {
-	liftComponentRef.forEach(item => {
+	liftComponentRef.value.forEach(item => {
 		item.setParams();
 		if(item.lift.isRun) {
 			item.run();
 		}
 	});
-	liftsArray = Object.entries(liftComponentRef);
-
+	liftsArray = Object.entries(liftComponentRef.value);
 	let currentQueue = store.value.getLiftQueue(isSingleLift);
 	if(currentQueue.length) {
 		for (let key in currentQueue) {

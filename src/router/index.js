@@ -4,17 +4,17 @@ import HomeView from '../views/HomeView.vue';
 
 const routes =  [
 	{
-		path: '/',
+		path: '/vue-lift/',
 		name: 'home',
 		component: HomeView
 	},
 	{
-		path: '/lifts',
+		path: '/vue-lift/lifts',
 		name: 'lifts',
 		component: () => import('../views/LiftsView.vue')
 	},
 	{
-		path: '/task',
+		path: '/vue-lift/task',
 		name: 'task',
 		component: () => import('../views/TaskView.vue')
 	},

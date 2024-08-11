@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, onMounted, onUnmounted, reactive, ref, watch } from 'vue';
+import { defineProps, onUnmounted, reactive, ref, watch } from 'vue';
 import { UP, DOWN } from '@/config/constants';
 import { useGlobalObservable } from '@/store/store';
 
@@ -49,11 +49,9 @@ function run () {
 	} else if (isMounted.value && lift.isRun) {
 		ownQueue.push(lift.destination);
 		isMounted.value = false;
-		//lift.destination = ownQueue[0];
 		animate(ownQueue[0]);
 	}
-
-};
+}
 
 function addFloor(floor) {
 
@@ -145,9 +143,7 @@ function saveQueueToLocalStorage(queue) {
 		queueFloors.push(queue[key]);
 	}
 	store.value.setGroupLiftQueue(queueFloors);
-};
-
-onMounted(() => console.log('MOUNTED LIFT: ', lift.id));
+}
 
 onUnmounted(() => {
 	clearTimeout(timerId);
